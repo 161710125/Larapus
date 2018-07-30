@@ -10,15 +10,16 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-    <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
-
     <!-- Fonts -->
     <link rel="dns-prefetch" href="https://fonts.gstatic.com">
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,400,600" rel="stylesheet" type="text/css">
 
     <!-- Styles -->
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/jquery.dataTables.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/selectize.css') }}" rel="stylesheet">
+    <link href="{{ asset('css/selectize.bootstrap3.css') }}" rel="stylesheet">
     <!-- <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.min.css') }}"> -->
 </head>
 <body>
@@ -36,8 +37,12 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
                         @if (Auth::check())
-                        <li><a href="{{url('/home')}}">Dashboard</a></li>
+                        <li><a href="{{ url('/home')}}">Home</a></li>&nbsp;|&nbsp;
                         @endif
+                        @role('admin')
+                        <li><a href="{{ route('authors.index') }}">Penulis</a></li>&nbsp;|&nbsp;
+                        <li><a href="{{ route('books.index') }}">Buku</a></li>
+                        @endrole
 
                     </ul>
 
@@ -76,8 +81,17 @@
         </nav>
 
         <main class="py-4">
+            @include('layouts._flash')
             @yield('content')
         </main>
     </div>
+    <!-- Scripts -->
+    
+    <script src="{{ asset('js/app.js') }}"></script>
+    <script src="{{ asset('js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('js/dataTables.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('js/custom.js') }}"></script>
+    <script src="{{ asset('js/selectize.min.js') }}"></script>
+    @yield('scripts')
 </body>
 </html>
