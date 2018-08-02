@@ -14,8 +14,7 @@ use App\Exceptions\BookException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use App\BorrowLog;
 use Illuminate\Support\Facades\Auth;
-
-
+use Excel;
 
 
 class BookController extends Controller
@@ -156,7 +155,9 @@ class BookController extends Controller
     public function destroy($id)
     {
         $book = Book::find($id);
-        if ($book->cover) {
+        $cover = $book->cover;
+        if(!$book->delete()) return redirect()->back();
+        if ($cover) {
         $old_cover = $book->cover;
         $filepath = public_path() . DIRECTORY_SEPARATOR . 'img'
         . DIRECTORY_SEPARATOR . $book->cover;
@@ -165,10 +166,9 @@ class BookController extends Controller
         } catch (FileNotFoundException $e) {
         }
         }
-        $book->delete();
         Session::flash("flash_notification", [
         "level"=>"success",
-        "message"=>"Buku berhasil dihapus"
+        "message"=>"Buku $book->title berhasil dihapus"
         ]);
         return redirect()->route('books.index');
     }
@@ -197,20 +197,50 @@ return redirect('/');
 }
 
 public function returnBack($book_id)
-{
-$borrowLog = BorrowLog::where('user_id', Auth::user()->id)
-->where('book_id', $book_id)
-->where('is_returned', 0)
-->first();
-if ($borrowLog) {
-$borrowLog->is_returned = true;
-$borrowLog->save();
-Session::flash("flash_notification", [
-"level" => "success",
-"message" => "Berhasil mengembalikan " . $borrowLog->book->title
-]);
-}
-return redirect('/home');
-}
+    {
+    $borrowLog = BorrowLog::where('user_id', Auth::user()->id)
+    ->where('book_id', $book_id)
+    ->where('is_returned', 0)
+    ->first();
+        if ($borrowLog) {
+            $borrowLog->is_returned = true;
+            $borrowLog->save();
+            Session::flash("flash_notification", [
+            "level" => "success",
+            "message" => "Berhasil mengembalikan " . $borrowLog->book->title]);
+    }
+        return redirect('/home');
+    }
 
+    public function export() {
+        return view('books.export');
+    }
+
+    public function exportPost(Request $request) {
+        $this->validate($request, [
+            'authors_id'=>'required',
+        ], [ 'authors_id.required'=>'Anda belum memilih penulis. Pilih minimal 1 penulis.']);
+        $books = Book::whereIn('id', $request->get('authors_id'))->get();
+        Excel::create('Data Buku Larapus', function($excel) use ($books) {
+            $excel->setTitle('Data Buku Larapus')
+            ->setCreator(Auth::user()->name);
+            $excel->sheet('Data Buku', function($sheet) use ($books) {
+                $row = 1;
+                $sheet->row($row, [
+                'Judul',
+                'Jumlah',
+                'Stok',
+                'Penulis'
+            ]);
+                foreach ($books as $book) {
+                    $sheet->row(++$row, [
+                    $book->title,
+                    $book->amount,
+                    $book->stock,
+                    $book->authors->name
+                ]);
+                }
+            });
+        })->export('xls');
+    }
 }

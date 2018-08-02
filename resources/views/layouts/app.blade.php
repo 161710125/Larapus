@@ -20,7 +20,7 @@
     <link href="{{ asset('css/dataTables.bootstrap4.min.css') }}" rel="stylesheet">
     <link href="{{ asset('css/selectize.css') }}" rel="stylesheet">
     <link href="{{ asset('css/selectize.bootstrap3.css') }}" rel="stylesheet">
-    <!-- <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.min.css') }}"> -->
+    <link rel="stylesheet" type="text/css" href="{{ asset('css/bootstrap.min.css') }}">
 </head>
 <body>
     <div id="app">
@@ -38,11 +38,17 @@
                     <ul class="nav navbar-nav">
                         @if (Auth::check())
                         <li><a href="{{ url('/home')}}">Home</a></li>&nbsp;|&nbsp;
+                        <li><a href="{{ url('/')}}">Daftar Buku</a></li>&nbsp;|&nbsp;
                         @endif
                         @role('admin')
                         <li><a href="{{ route('authors.index') }}">Penulis</a></li>&nbsp;|&nbsp;
-                        <li><a href="{{ route('books.index') }}">Buku</a></li>
+                        <li><a href="{{ route('books.index') }}">Buku</a></li>&nbsp;|&nbsp;
+                        <li><a href="{{ route('members.index') }}">Member</a></li>&nbsp;|&nbsp;
+                        <li><a href="{{ route('statistic.index') }}">Peminjaman</a></li>&nbsp;|&nbsp;
                         @endrole
+                        @if (auth()->check())
+                        <li><a href="{{ url('/settings/profile') }}">Profil</a></li>
+                        @endif
 
                     </ul>
 
@@ -62,12 +68,15 @@
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
 
+
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                                    <a class="dropdown-item" href="{{ url('/settings/password') }}"><span class="fa fa-lock"></span> Ubah Password</a>                                    
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">
                                         {{ __('Logout') }}
                                     </a>
+
 
                                     <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                                         @csrf
@@ -92,6 +101,8 @@
     <script src="{{ asset('js/dataTables.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('js/custom.js') }}"></script>
     <script src="{{ asset('js/selectize.min.js') }}"></script>
+    <script src="{{ asset('js/Chart.min.js') }}"></script>
+    <script src='https://www.google.com/recaptcha/api.js'></script>
     @yield('scripts')
 </body>
 </html>
