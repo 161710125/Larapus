@@ -24,7 +24,7 @@ class MembersController extends Controller
     if ($request->ajax()) {
     $members = Role::where('name', 'member')->first()->users;
     return Datatables::of($members)
-    ->addColumn('namelink', function($member) {
+    ->addColumn('name', function($member) {
     return '<a href="'.route('members.show', $member->id).'">'.$member->name.'</a>';
     })
     ->addColumn('action', function($member){

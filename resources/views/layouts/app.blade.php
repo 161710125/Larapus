@@ -37,18 +37,15 @@
                     <!-- Left Side Of Navbar -->
                     <ul class="nav navbar-nav">
                         @if (Auth::check())
-                        <li><a href="{{ url('/home')}}">Home</a></li>&nbsp;|&nbsp;
-                        <li><a href="{{ url('/')}}">Daftar Buku</a></li>&nbsp;|&nbsp;
+                        <li>{!! Html::smartNav(url('/home'), 'Dashboard') !!}</li>&nbsp;|&nbsp;
+                        <li>{!! Html::smartNav(url('/'), 'Daftar Buku') !!}</li>&nbsp;|&nbsp;
                         @endif
                         @role('admin')
-                        <li><a href="{{ route('authors.index') }}">Penulis</a></li>&nbsp;|&nbsp;
-                        <li><a href="{{ route('books.index') }}">Buku</a></li>&nbsp;|&nbsp;
-                        <li><a href="{{ route('members.index') }}">Member</a></li>&nbsp;|&nbsp;
-                        <li><a href="{{ route('statistic.index') }}">Peminjaman</a></li>&nbsp;|&nbsp;
+                        <li>{!! Html::smartNav(route('authors.index'), 'Penulis') !!}</li>&nbsp;|&nbsp;
+                        <li>{!! Html::smartNav(route('books.index'), 'Buku') !!}</li>&nbsp;|&nbsp;
+                        <li>{!! Html::smartNav(route('members.index'), 'Member') !!}</li>&nbsp;|&nbsp;
+                        <li>{!! Html::smartNav(route('statistic.index'), 'Peminjaman') !!}</li>
                         @endrole
-                        @if (auth()->check())
-                        <li><a href="{{ url('/settings/profile') }}">Profil</a></li>
-                        @endif
 
                     </ul>
 
@@ -67,10 +64,13 @@
                                 <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                     {{ Auth::user()->name }} <span class="caret"></span>
                                 </a>
-
-
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
-                                    <a class="dropdown-item" href="{{ url('/settings/password') }}"><span class="fa fa-lock"></span> Ubah Password</a>                                    
+                                    @if (auth()->check())
+                                    <a class="dropdown-item" href="{{ url('/settings/profile') }}">Profil</a>
+                                    @endif
+                                    
+                                    <a class="dropdown-item" href="{{ url('/settings/password') }}"><span class="fa fa-lock"></span> Ubah Password</a>
+
                                     <a class="dropdown-item" href="{{ route('logout') }}"
                                        onclick="event.preventDefault();
                                                      document.getElementById('logout-form').submit();">

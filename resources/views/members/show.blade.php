@@ -1,19 +1,17 @@
 @extends('layouts.app')
 @section('content')
 <div class="container">
-   <div class="row">
-      <div class="col-md-12">
-         <ul class="breadcrumb">
-            <li><a href="{{ url('/home') }}">Dashboard</a></li>
-            <li><a href="{{ url('/admin/members') }}">Member</a></li>
-            <li class="active">Detail {{ $member->name }}</li>
-         </ul>
-         <div class="panel panel-default">
-            <div class="panel-heading">
-               <h2 class="panel-title">Detail {{ $member->name }}</h2>
-            </div>
-            <div class="panel-body">
-               <p>Buku yang sedang dipinjam:</p>
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <nav aria-label="breadcrumb primary">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item active" aria-current="page"><a href="{{ url('/home') }}">Home</a> </li>
+                    <li class="breadcrumb-item active" aria-current="page">Member</li>
+                    <li class="breadcrumb-item active" aria-current="page">Detail Member {{$member->name}}</li>
+                </ol>
+            </nav>
+            <div class="card">
+               <div class="card-header">Buku Yang Sedang Dipinjam</div>
                <table class="table table-condensed table-striped">
                   <thead>
                      <tr>
